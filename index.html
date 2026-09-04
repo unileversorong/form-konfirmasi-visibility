@@ -1206,7 +1206,8 @@ $('btnSubmit').onclick=async()=>{
     s+=`\n${d.izin==='DIIZINKAN'?'✅':'❌'} Izin ${cap(d.tindakan)} : *${d.izin}*`;
     if(d.izin==='DIIZINKAN'){s+=`\n📦 Jumlah      : ${d.jumlah} unit${d.pipa!=='-'?' · 🔩 Pipa besi: '+d.pipa:''}\n📍 Posisi      : ${d.posisi}`;}
     else if(d.alasan!=='-')s+=`\n📝 Alasan      : ${d.alasan}`;
-    const fl=[...(links[j+'_t']||[]).map((u,i)=>`📷 Foto ${i+1}      : ${u}`),...(links[j+'_k']||[]).map((u,i)=>`📷 Kondisi ${i+1}   : ${u}`)];
+    const lbl=(base,arr)=>arr.map((u,i)=>`📷 ${base}${arr.length>1?' '+(i+1):''} : ${u}`);
+    const fl=[...lbl('Foto Titik Pemasangan',links[j+'_t']||[]),...lbl('Foto Kondisi',links[j+'_k']||[])];
     if(fl.length)s+='\n'+fl.join('\n'); else if(J[j].fotoT.length||J[j].fotoK.length)s+=`\n📷 Foto        : ${J[j].fotoT.length+J[j].fotoK.length} foto (tersimpan di HP, belum terupload)`;
     return s;};
   const buildReport=()=>
