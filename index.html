@@ -1212,15 +1212,20 @@ $('btnSubmit').onclick=async()=>{
   const buildReport=()=>
 `*KONFIRMASI VISIBILITY - ${WILAYAH}*
 📅 ${fmtDate(now)}
+
 👤 Salesman : ${sel.s}${salesHp?' · wa.me/'+salesHp:''}
 👷 MD       : ${MD.nama}${MD.hp?' · wa.me/'+MD.hp:''}
 🏪 Outlet   : ${sel.n}
 🔢 Kode     : ${sel.k}
+
 ${blok('PH',ph)}
+
 ${blok('SH',sh)}
+
 ☎️ Kontak   : ${(kNama||kHp)?`${kNama||'-'}${pemberi?' ('+pemberi+')':''} ${kHp}`.trim():'-'}
 📝 Catatan  : ${catatan||'-'}
 🗺️ Lokasi   : ${mapsLink}
+
 #KONFIRMASIVISIBILITY #${WILAYAH} #${sel.k}`;
 
   $('overlay').style.display='flex';$('ovTxt').textContent='Menyimpan data & foto...';
