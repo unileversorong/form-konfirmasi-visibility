@@ -739,12 +739,31 @@ pre.wa{white-space:pre-wrap;background:#e7ffdb;border:1px solid #b7e4a3;border-r
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:6px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
 .b-ok{background:#def7ec;color:#03543f;border:1px solid #84e1bc}
+.b-fix{background:#fef3c7;color:#92400e;border:1px solid #fcd34d;display:block;padding:6px 9px;white-space:normal;line-height:1.4;border-radius:8px}
+.fixlink{display:flex;align-items:center;gap:7px;margin-top:8px;padding:10px 12px;border:2px dashed #f59e0b;border-radius:9px;background:#fffbeb;color:#92400e;font-weight:700;font-size:13px;text-decoration:none}
+.fixlink:active{background:#fef3c7}
+.fixlink .ic{font-size:17px}
+.undolink{font-size:12px;color:var(--mut);text-decoration:underline;display:inline-block;margin-top:4px}
 .leaflet-popup-content{font-size:13px;margin:10px 12px}
 .leaflet-popup-content button{margin-top:6px;padding:6px 10px;border:0;border-radius:6px;background:var(--blue);color:#fff;font-weight:600;cursor:pointer}
 .tools{display:flex;gap:8px;align-items:center;margin:10px 0 6px}
 .tools .seg-mini{display:flex;background:#eef0f3;border-radius:8px;padding:3px;flex:1}
 .seg-mini button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:6px;font-size:11.5px;white-space:nowrap;font-weight:500;color:var(--mut);cursor:pointer}
 .seg-mini button.on{background:#fff;color:var(--txt);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.seg-mini button[data-v="belum"].on{background:var(--amber);color:#fff;box-shadow:0 1px 3px rgba(217,119,6,.45)}
+.seg-mini button[data-v="sudah"].on{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(14,159,110,.45)}
+.seg-mini button[data-v="semua"].on{background:var(--blue);color:#fff;box-shadow:0 1px 3px rgba(26,86,219,.45)}
+#chipBisa button[data-v="ya"].on{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(14,159,110,.45)}
+#chipBisa button[data-v="tidak"].on{background:var(--red);color:#fff;box-shadow:0 1px 3px rgba(224,36,36,.45)}
+#chipBisaWrap.hidden{display:none}
+#wilSeg button{font-size:15px;font-weight:700;letter-spacing:.3px}
+#wilSeg button:nth-child(1).on{background:var(--blue);color:#fff;box-shadow:0 1px 3px rgba(26,86,219,.45)}
+#wilSeg button:nth-child(2).on{background:#7c3aed;color:#fff;box-shadow:0 1px 3px rgba(124,58,237,.45)}
+#wilSeg button:nth-child(3).on{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(14,159,110,.45)}
+#wilGate{background:#fffbeb;border:1.5px dashed #f59e0b;color:#92400e;font-weight:700;padding:10px 12px;border-radius:9px;text-align:center}
+.sublbl{font-size:11px;font-weight:700;color:var(--mut);margin:0 0 4px;text-transform:uppercase;letter-spacing:.3px}
+.hl-box{background:#f0f5ff;border:1.5px solid #c3dafe;border-radius:10px;padding:10px 12px;margin-top:10px}
+.hl-box label{margin:0 0 6px}
 .tools .vt{border:1px solid var(--bd);background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:500;color:var(--txt);cursor:pointer;white-space:nowrap}
 .chk{display:flex;align-items:center;gap:8px;font-size:12px;color:#374151;margin:2px 0 8px;font-weight:400}
 .chk input{width:16px;height:16px;margin:0}
@@ -790,18 +809,34 @@ pre.wa{white-space:pre-wrap;background:#e7ffdb;border:1px solid #b7e4a3;border-r
 <div id="pageForm">
   <div class="card">
     <h2>Pilih Outlet</h2>
-    <label style="margin-top:0" id="lblWil">Wilayah</label><select id="wil"></select>
+    <label style="margin-top:0" id="lblWil">Pilih wilayah <span class="req">*</span></label>
+    <div class="seg-mini" id="wilSeg" style="display:flex;background:#eef0f3;border-radius:8px;padding:4px;height:52px;box-sizing:border-box"></div>
+    <div id="wilGate" class="hint" style="margin-top:8px">👆 Pilih NABIRE atau SORONG dulu untuk mulai.</div>
 
-    <div id="pick">
-      <label>Penyaring daftar <small style="color:var(--mut);font-weight:400">— rute salesman &amp; status visibility</small></label>
-      <div class="grid2" style="grid-template-columns:1fr 1fr">
-        <div><select id="sales"><option value="">Semua salesman</option></select></div>
-        <div>
-          <div class="seg-mini" id="chipStatus" style="display:flex;background:#eef0f3;border-radius:8px;padding:3px;height:44px;box-sizing:border-box">
-            <button data-v="belum" class="on">Belum ada</button>
-            <button data-v="sudah">Sudah ada</button>
-            <button data-v="semua">Semua</button>
+    <div id="pick" class="hidden">
+      <label>Penyaring daftar</label>
+      <div class="hl-box">
+        <div class="grid2" style="grid-template-columns:1fr;gap:12px">
+          <div>
+            <div class="sublbl">Salesman</div>
+            <select id="sales"><option value="">Semua salesman</option></select>
           </div>
+          <div>
+            <div class="sublbl">Visibility PH/SH</div>
+            <div class="seg-mini" id="chipStatus" style="display:flex;background:#eef0f3;border-radius:8px;padding:3px;height:44px;box-sizing:border-box">
+              <button data-v="belum" class="on">Belum ada</button>
+              <button data-v="sudah">Sudah ada</button>
+              <button data-v="semua">Semua</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="chipBisaWrap" class="hl-box">
+        <label style="margin-top:0">Data Awal: Perlu Konfirmasi <small style="color:var(--mut);font-weight:400">— hanya untuk yang belum ada PH/SH</small></label>
+        <div class="seg-mini" id="chipBisa" style="display:flex;background:#eef0f3;border-radius:8px;padding:3px;height:44px;box-sizing:border-box">
+          <button data-v="semua" class="on">Semua</button>
+          <button data-v="ya">✅ Bisa</button>
+          <button data-v="tidak">❌ Tidak</button>
         </div>
       </div>
       <label>Cari outlet</label>
@@ -959,7 +994,10 @@ let doneCodes = new Set(JSON.parse(localStorage.getItem('ph_done')||'[]'));
 
 const $=id=>document.getElementById(id);
 const JENIS={PH:{nama:'Product Hanger',pendek:'PH',ter:'t',bisa:'b',pipa:true},SH:{nama:'Standing Hanger',pendek:'SH',ter:'ts',bisa:'bs',pipa:false}};
-let sel=null, gps=null, fStatus=(['belum','sudah','semua'].includes(localStorage.getItem('ph_fstatus'))?localStorage.getItem('ph_fstatus'):'belum'), view='list', map=null, markers=null;
+// terEff: status "sudah ada" efektif — data awal master ATAU dikoreksi manual oleh salesman di lapangan
+function terEff(j){ return !!(sel && sel[JENIS[j].ter]) || !!(J[j] && J[j].override); }
+let sel=null, gps=null, fStatus=(['belum','sudah','semua'].includes(localStorage.getItem('ph_fstatus'))?localStorage.getItem('ph_fstatus'):'belum'),
+    fBisa=(['semua','ya','tidak'].includes(localStorage.getItem('ph_fbisa'))?localStorage.getItem('ph_fbisa'):'semua'), view='list', map=null, markers=null;
 // state per jenis
 const MAX_FOTO=3;
 const J={PH:{kondisi:'',izin:'',pipa:'',fotoT:[],fotoK:[]},SH:{kondisi:'',izin:'',pipa:'',fotoT:[],fotoK:[]}};
@@ -967,15 +1005,24 @@ const J={PH:{kondisi:'',izin:'',pipa:'',fotoT:[],fotoK:[]},SH:{kondisi:'',izin:'
 if(!SCRIPT_URL) $('cfgWarn').classList.remove('hidden');
 $('sec2').classList.add('hidden');
 [...$('chipStatus').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v===fStatus));
+[...$('chipBisa').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v===fBisa));
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const ada=o=>o.t||o.ts;   // outlet sudah punya visibility (PH atau SH)
 
 // --- wilayah & salesman
-CONFIG.wilayah.forEach(w=>{const op=document.createElement('option');op.value=w;op.textContent=w;$('wil').appendChild(op);});
+const lastWil=localStorage.getItem('ph_wil');
+CONFIG.wilayah.forEach((w,i)=>{
+  const b=document.createElement('button'); b.type='button'; b.dataset.v=w;
+  b.innerHTML=w+(w===lastWil?' <small style="font-weight:400;opacity:.85">(terakhir)</small>':'');
+  b.addEventListener('click',()=>setWilayah(w));
+  $('wilSeg').appendChild(b);
+});
 (CONFIG.posisi.PH||[]).forEach(p=>{const op=document.createElement('option');op.textContent=p;$('pos_PH').appendChild(op);});
 (CONFIG.posisi.SH||[]).forEach(p=>{const op=document.createElement('option');op.textContent=p;$('pos_SH').appendChild(op);});
 function setWilayah(w){
-  WILAYAH=w; localStorage.setItem('ph_wil',w); $('wil').value=w;
+  WILAYAH=w; localStorage.setItem('ph_wil',w);
+  [...$('wilSeg').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v===w));
+  $('pick').classList.remove('hidden'); $('wilGate').style.display='none';
   $('subT').textContent=w.charAt(0)+w.slice(1).toLowerCase()+' · Product Hanger & Standing Hanger · izin & posisi oleh Salesman';
   OUTLETS=ALL_OUTLETS.filter(o=>o.w===w);
   const sl=$('sales'); sl.innerHTML='<option value="">Semua salesman</option>';
@@ -986,8 +1033,11 @@ function setWilayah(w){
   if(map){map.remove();map=null;markers=null;}
   renderList();
 }
-if(CONFIG.wilayah.length<2){$('wil').style.display='none';$('lblWil').style.display='none';}
-$('wil').addEventListener('change',()=>setWilayah($('wil').value));
+if(CONFIG.wilayah.length<2){
+  // hanya 1 wilayah: langsung pilih, tidak perlu gerbang pilihan
+  $('lblWil').style.display='none'; $('wilSeg').style.display='none'; $('wilGate').style.display='none';
+  setWilayah(CONFIG.wilayah[0]);
+}
 $('sales').addEventListener('change',()=>{localStorage.setItem('ph_sales_'+WILAYAH,$('sales').value);resetPick();renderList();});
 $('q').addEventListener('input',()=>{$('qClear').hidden=!$('q').value;renderList();});
 $('qClear').onclick=()=>{$('q').value='';$('qClear').hidden=true;renderList();$('q').focus();};
@@ -999,20 +1049,25 @@ function renderList(){
   const q=$('q').value.trim().toLowerCase();
   const searching=!!q; const all=searching||!s;
   let rows=all?OUTLETS.slice():OUTLETS.filter(o=>o.s===s);
-  if(!searching){ if(fStatus==='belum')rows=rows.filter(o=>!ada(o)); else if(fStatus==='sudah')rows=rows.filter(o=>ada(o)); }
+  if(!searching){ if(fStatus==='belum')rows=rows.filter(o=>!ada(o)); else if(fStatus==='sudah')rows=rows.filter(o=>ada(o));
+    if(fBisa!=='semua')rows=rows.filter(o=>!ada(o)&&o.b===(fBisa==='ya'?'YA':'TIDAK')); }
   $('chipStatus').classList.toggle('off',searching); $('sales').classList.toggle('off',searching);
+  $('chipBisaWrap').classList.toggle('hidden',fStatus==='sudah');
+  $('chipBisa').classList.toggle('off',searching);
   if(searching){rows=rows.filter(o=>o.n.toLowerCase().includes(q)||o.k.includes(q));
     $('stat').innerHTML=`🔍 <b>${rows.length}</b> hasil untuk "${esc(q)}" di <b>semua outlet ${WILAYAH}</b> <span style="color:#92400e">(penyaring tidak berlaku saat mencari)</span>`;}
   else{const total=rows.length, done=rows.filter(o=>doneCodes.has(o.k)).length;
-    const fl=(s?`Rute <b>${esc(s)}</b>`:'Semua salesman')+' · '+(fStatus==='belum'?'<b>belum ada</b> visibility':fStatus==='sudah'?'<b>sudah ada</b> visibility':'semua status');
-    $('stat').innerHTML=`${fl} → <b>${total}</b> outlet, ${done} sudah dikonfirmasi lewat form${(s||fStatus!=='semua')?' · <a href="#" id="lnkReset">tampilkan semua</a>':''}`;
-    const lr=$('lnkReset'); if(lr)lr.onclick=e=>{e.preventDefault();$('sales').value='';localStorage.setItem('ph_sales_'+WILAYAH,'');fStatus='semua';localStorage.setItem('ph_fstatus','semua');[...$('chipStatus').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v==='semua'));renderList();};}
+    const flBisa=(fBisa!=='semua')?(' · '+(fBisa==='ya'?'<b>Bisa</b>':'<b>Tidak</b>')+' pasang (data awal)'):'';
+    const fl=(s?`Rute <b>${esc(s)}</b>`:'Semua salesman')+' · '+(fStatus==='belum'?'<b>belum ada</b> visibility':fStatus==='sudah'?'<b>sudah ada</b> visibility':'semua status')+flBisa;
+    $('stat').innerHTML=`${fl} → <b>${total}</b> outlet, ${done} sudah dikonfirmasi lewat form${(s||fStatus!=='semua'||fBisa!=='semua')?' · <a href="#" id="lnkReset">tampilkan semua</a>':''}`;
+    const lr=$('lnkReset'); if(lr)lr.onclick=e=>{e.preventDefault();$('sales').value='';localStorage.setItem('ph_sales_'+WILAYAH,'');fStatus='semua';localStorage.setItem('ph_fstatus','semua');fBisa='semua';localStorage.setItem('ph_fbisa','semua');[...$('chipStatus').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v==='semua'));[...$('chipBisa').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v==='semua'));renderList();};}
   if(view==='map')renderMap(rows);
   if(!rows.length){
     const msg=searching?`Tidak ada outlet "${esc(q)}" di ${WILAYAH}. Cek ejaan, atau coba ketik kode outlet.`
-      :`Tidak ada outlet ${fStatus==='belum'?'yang belum ada visibility':fStatus==='sudah'?'yang sudah ada visibility':''}${s?' di rute '+esc(s):''}. Ubah penyaring di atas, atau ketik nama outlet untuk mencari di semua outlet.`;
+      :`Tidak ada outlet ${fStatus==='belum'?'yang belum ada visibility':fStatus==='sudah'?'yang sudah ada visibility':''}${fBisa!=='semua'?(fBisa==='ya'?' & bisa pasang':' & tidak bisa pasang'):''}${s?' di rute '+esc(s):''}. Ubah penyaring di atas, atau ketik nama outlet untuk mencari di semua outlet.`;
     list.innerHTML=`<div class="oi" style="color:#888;cursor:default;display:block">${msg}</div>`;return;}
-  rows.sort((a,b)=>(doneCodes.has(a.k)-doneCodes.has(b.k))||a.n.localeCompare(b.n));
+  const bisaRank=o=>ada(o)?1:(o.b==='YA'?0:o.b==='TIDAK'?2:1);   // Bisa dulu, lalu -/Tidak
+  rows.sort((a,b)=>(doneCodes.has(a.k)-doneCodes.has(b.k))||(bisaRank(a)-bisaRank(b))||a.n.localeCompare(b.n));
   let more=0; if(rows.length>80){more=rows.length-80;rows=rows.slice(0,80);}
   rows.forEach(o=>{
     const d=document.createElement('div');d.className='oi'+(sel&&sel.k===o.k?' sel':'');
@@ -1034,25 +1089,45 @@ function selectOutlet(o){
   $('selCard').innerHTML=`<div><div class="nm">${esc(sel.n)}</div><div class="kd">${sel.k}</div><div class="da">${awal}<br>Salesman: <b>${esc(sel.s)}</b></div>${isDone?'<div class="warn">⚠️ Sudah pernah dikonfirmasi — mengisi lagi akan menambah data baru.</div>':''}</div><button type="button" class="chg" id="btnChg">Ganti</button>`;
   $('btnChg').onclick=()=>{resetPick();$('q').value='';$('qClear').hidden=true;renderList();$('q').focus();};
   $('pick').classList.add('hidden');$('selCard').classList.remove('hidden');$('sec2').classList.remove('hidden');
-  ['PH','SH'].forEach(j=>{
-    const ter=sel[JENIS[j].ter], bisa=sel[JENIS[j].bisa];
-    $('awal_'+j).innerHTML=ter?`<span class="badge b-ok">${JENIS[j].pendek} sudah terpasang di outlet ini</span>`:`Data awal: ${JENIS[j].pendek} belum ada${bisa!=='-'?' · bisa pasang: <b>'+bisa+'</b>':''}`;
-    $('kond_'+j).classList.toggle('hidden',!ter);
-    lblIzin(j);
-  });
+  ['PH','SH'].forEach(j=>renderAwal(j));
   if(JENIS.PH.pipa&&(sel.p==='YA'||sel.p==='TIDAK')) setSeg('segPipa_PH',sel.p,v=>J.PH.pipa=v,'neu');
   gpsLabel(); window.scrollTo({top:0,behavior:'smooth'});
 }
 function resetJenis(j){
-  J[j]={kondisi:'',izin:'',pipa:'',fotoT:[],fotoK:[]};
+  J[j]={kondisi:'',izin:'',pipa:'',fotoT:[],fotoK:[],override:false};
   ['segKondisi_','segIzin_','segPipa_'].forEach(p=>{const e=$(p+j);if(e)[...e.children].forEach(b=>b.className='');});
   ['det_','alasan_','fk_'].forEach(p=>$(p+j).classList.add('hidden'));
   $('jml_'+j).value='';$('pos_'+j).value='';$('als_'+j).value='';
   resetPhotoBox('pbt_'+j,'ft_in_'+j,j,'fotoT'); resetPhotoBox('pbk_'+j,'fk_in_'+j,j,'fotoK');
 }
 
+// --- tampilkan data awal + opsi koreksi (kalau ternyata beda dari master)
+function renderAwal(j){
+  const masterTer=sel[JENIS[j].ter], bisa=sel[JENIS[j].bisa], eff=terEff(j);
+  const n=JENIS[j].pendek;
+  let html;
+  if(masterTer){
+    html=`<span class="badge b-ok">${n} sudah terpasang di outlet ini</span>`;
+  }else if(J[j].override){
+    html=`Data awal: ${n} belum ada${bisa!=='-'?' · bisa pasang: <b>'+bisa+'</b>':''}<br>`
+       + `<div class="badge b-fix">⚠️ DIKOREKSI: ternyata ${n} SUDAH ADA di lokasi (akan tercatat untuk audit)</div><br>`
+       + `<a href="#" onclick="toggleOverride('${j}');return false;" class="undolink">↩ batalkan koreksi ini</a>`;
+  }else{
+    html=`Data awal: ${n} belum ada${bisa!=='-'?' · bisa pasang: <b>'+bisa+'</b>':''}<br>`
+       + `<a href="#" onclick="toggleOverride('${j}');return false;" class="fixlink"><span class="ic">⚠️</span> Ternyata ${n}-nya SUDAH ADA di outlet ini? Tekan di sini</a>`;
+  }
+  $('awal_'+j).innerHTML=html;
+  $('kond_'+j).classList.toggle('hidden',!eff);
+  lblIzin(j);
+}
+function toggleOverride(j){
+  J[j].override=!J[j].override;
+  if(!J[j].override){ J[j].kondisi=''; [...$('segKondisi_'+j).children].forEach(b=>b.className=''); $('fk_'+j).classList.add('hidden'); }
+  renderAwal(j);
+}
+
 // --- tindakan & label
-function tindakan(j){ if(!sel)return ''; const ter=sel[JENIS[j].ter]; if(!ter)return 'PASANG BARU'; const k=J[j].kondisi; return k==='HILANG'?'PASANG ULANG':k==='RUSAK'?'GANTI':'TAMBAH'; }
+function tindakan(j){ if(!sel)return ''; if(!terEff(j))return 'PASANG BARU'; const k=J[j].kondisi; return k==='HILANG'?'PASANG ULANG':k==='RUSAK'?'GANTI':'TAMBAH'; }
 function lblIzin(j){
   const n=JENIS[j].pendek, tk=tindakan(j);
   const q={'PASANG BARU':`Apakah toko mengizinkan pemasangan ${n}?`,'TAMBAH':`Apakah toko mengizinkan <u>tambah</u> ${n} baru?`,'GANTI':`Apakah toko mengizinkan ${n} yang rusak <u>diganti</u>?`,'PASANG ULANG':`${n} sudah tidak ada — apakah toko mengizinkan <u>pasang ulang</u>?`}[tk]||`Apakah toko mengizinkan pemasangan ${n}?`;
@@ -1064,13 +1139,16 @@ function setSeg(id,val,cb,style){
 }
 ['PH','SH'].forEach(j=>{
   $('segKondisi_'+j).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setSeg('segKondisi_'+j,b.dataset.v,v=>J[j].kondisi=v);
-    $('fk_'+j).classList.toggle('hidden',J[j].kondisi==='BAIK');
-    $('pbk_'+j).querySelector('span').innerHTML=J[j].kondisi==='HILANG'?`📷 Foto lokasi bekas ${JENIS[j].pendek} / tempat seharusnya`:`📷 Foto ${JENIS[j].pendek} yang rusak`;
+    const wajibFoto=J[j].kondisi!=='BAIK'||J[j].override;
+    $('fk_'+j).classList.toggle('hidden',!wajibFoto);
+    $('pbk_'+j).querySelector('span').innerHTML=J[j].kondisi==='HILANG'?`📷 Foto lokasi bekas ${JENIS[j].pendek} / tempat seharusnya`
+      :(J[j].kondisi==='BAIK'&&J[j].override)?`📷 Foto bukti ${JENIS[j].pendek} yang ternyata sudah ada (kondisi baik)`
+      :`📷 Foto ${JENIS[j].pendek} yang rusak`;
     lblIzin(j);});
   $('segIzin_'+j).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setSeg('segIzin_'+j,b.dataset.v,v=>J[j].izin=v);
     $('det_'+j).classList.toggle('hidden',J[j].izin!=='DIIZINKAN');
     $('alasan_'+j).classList.toggle('hidden',J[j].izin!=='DITOLAK');
-    const ter=sel&&sel[JENIS[j].ter]; $('reqAlasan_'+j).style.display=ter?'none':'';  // outlet yg sudah terpasang: alasan opsional
+    const ter=sel&&terEff(j); $('reqAlasan_'+j).style.display=ter?'none':'';  // outlet yg sudah terpasang: alasan opsional
     if(j==='SH'&&J.SH.izin==='SKIP'){$('kond_SH').classList.add('hidden');} else if(j==='SH'&&sel){$('kond_SH').classList.toggle('hidden',!sel.ts);} });
   const sp=$('segPipa_'+j); if(sp)sp.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setSeg('segPipa_'+j,b.dataset.v,v=>J[j].pipa=v,'neu');});
 });
@@ -1102,7 +1180,11 @@ function compress(file,maxW,q){return new Promise(res=>{const img=new Image();co
 
 // --- penyaring status & peta
 $('chipStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.v){fStatus=b.dataset.v;localStorage.setItem('ph_fstatus',fStatus);[...$('chipStatus').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x===b));}
+  if(b.dataset.v){fStatus=b.dataset.v;localStorage.setItem('ph_fstatus',fStatus);[...$('chipStatus').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x===b));
+    if(fStatus==='sudah'&&fBisa!=='semua'){fBisa='semua';localStorage.setItem('ph_fbisa','semua');[...$('chipBisa').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x.dataset.v==='semua'));}}
+  renderList();});
+$('chipBisa').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.v){fBisa=b.dataset.v;localStorage.setItem('ph_fbisa',fBisa);[...$('chipBisa').querySelectorAll('[data-v]')].forEach(x=>x.classList.toggle('on',x===b));}
   renderList();});
 $('vToggle').onclick=()=>{view=view==='list'?'map':'list';$('vToggle').textContent=view==='map'?'☰ Daftar':'🗺️ Peta';
   $('outletList').classList.toggle('hidden',view==='map');$('mapWrap').classList.toggle('hidden',view!=='map');renderList();};
@@ -1158,11 +1240,11 @@ $('btnGps').onclick=()=>{
 function showErr(m){const e=$('err');e.textContent=m;e.style.display='block';e.scrollIntoView({behavior:'smooth',block:'center'});}
 function fmtDate(d){const p=n=>String(n).padStart(2,'0');return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;}
 function validJenis(j,wajib){
-  const n=JENIS[j].pendek, ter=sel[JENIS[j].ter], st=J[j];
+  const n=JENIS[j].pendek, ter=terEff(j), st=J[j];
   if(!st.izin){ if(wajib)return `Jawab izin ${n}: DIIZINKAN / DITOLAK.`; return `Jawab izin ${n}: DIIZINKAN / DITOLAK / LEWATI.`; }
   if(st.izin==='SKIP')return '';
   if(ter&&!st.kondisi)return `Pilih kondisi ${n} yang sudah terpasang (Baik / Rusak / Hilang).`;
-  if(ter&&st.kondisi!=='BAIK'&&!st.fotoK.length)return `Ambil foto kondisi ${n} yang rusak/hilang.`;
+  if(ter&&(st.kondisi!=='BAIK'||st.override)&&!st.fotoK.length)return st.override?`Ambil foto bukti ${n} yang ternyata sudah ada.`:`Ambil foto kondisi ${n} yang rusak/hilang.`;
   if(st.izin==='DIIZINKAN'){
     const jm=$('jml_'+j).value; if(!jm||+jm<1)return `Isi jumlah ${n}.`;
     if(JENIS[j].pipa&&!st.pipa)return `Pilih apakah ${n} butuh pipa besi.`;
@@ -1172,7 +1254,7 @@ function validJenis(j,wajib){
   return '';
 }
 function dataJenis(j){
-  const st=J[j], ter=sel[JENIS[j].ter];
+  const st=J[j], ter=terEff(j);
   if(st.izin==='SKIP')return {status:ter?'SUDAH ADA':'BELUM',kondisi:'-',tindakan:'-',izin:'DILEWATI',jumlah:0,pipa:'-',posisi:'-',alasan:'-'};
   const ok=st.izin==='DIIZINKAN';
   return {status:ter?'SUDAH ADA':'BELUM',kondisi:ter?st.kondisi:'-',tindakan:tindakan(j),izin:st.izin,jumlah:ok?+$('jml_'+j).value:0,pipa:ok&&JENIS[j].pipa?st.pipa:'-',posisi:ok?$('pos_'+j).value:'-',alasan:st.izin==='DITOLAK'?($('als_'+j).value.trim()||'-'):'-'};
@@ -1186,7 +1268,10 @@ $('btnSubmit').onclick=async()=>{
   const now=new Date();
   const ph=dataJenis('PH'), sh=dataJenis('SH');
   const salesHp=(CONFIG.sales_hp[WILAYAH]||{})[sel.s]||'', MD=CONFIG.md[WILAYAH]||{nama:'-',hp:''};
-  const pemberi=$('pemberi').value,kNama=$('kNama').value.trim(),kHp=$('kHp').value.trim(),catatan=$('catatan').value.trim();
+  const pemberi=$('pemberi').value,kNama=$('kNama').value.trim(),kHp=$('kHp').value.trim();
+  const koreksi=[]; if(J.PH.override)koreksi.push('PH'); if(J.SH.override)koreksi.push('SH');
+  const catatanUser=$('catatan').value.trim();
+  const catatan=[koreksi.length?`⚠️ Koreksi data awal: ${koreksi.join(' & ')} ternyata SUDAH ADA (master masih tercatat belum — mohon dicek admin)`:'',catatanUser].filter(Boolean).join(' — ');
   const payload={wilayah:WILAYAH,waktu:now.toISOString(),salesman:sel.s,salesman_hp:salesHp,kode:sel.k,outlet:sel.n,
     data_awal_bisa:sel.b,data_awal_pipa:sel.p,
     ph_status:ph.status,ph_kondisi:ph.kondisi,ph_tindakan:ph.tindakan,ph_izin:ph.izin,ph_jumlah:ph.jumlah,ph_pipa:ph.pipa,ph_posisi:ph.posisi,ph_alasan:ph.alasan,
@@ -1195,7 +1280,7 @@ $('btnSubmit').onclick=async()=>{
     gps_lat:gps?gps.lat:'',gps_lng:gps?gps.lng:'',gps_akurasi:gps?gps.acc:'',master_lat:sel.lat??'',master_lng:sel.lng??'',
     foto_ph:J.PH.izin!=='SKIP'?J.PH.fotoT:[],foto_ph_kondisi:J.PH.izin!=='SKIP'?J.PH.fotoK:[],
     foto_sh:J.SH.izin!=='SKIP'?J.SH.fotoT:[],foto_sh_kondisi:J.SH.izin!=='SKIP'?J.SH.fotoK:[],ua:navigator.userAgent};
-  const mapsLink=gps?`https://maps.google.com/?q=${gps.lat},${gps.lng}`:(sel.lat!=null?`https://maps.google.com/?q=${sel.lat},${sel.lng}`:'- (belum ada titik master)');
+  const mapsLink=(sel.lat!=null)?`https://maps.google.com/?q=${sel.lat},${sel.lng}`:'- (belum ada titik master)';
   const links={};
   const cap=s=>s.charAt(0)+s.slice(1).toLowerCase();
   const blok=(j,d)=>{
@@ -1269,7 +1354,6 @@ $('btnNew').onclick=()=>{location.reload();};
   if(!SCRIPT_URL)return;
   try{const r=await fetch(SCRIPT_URL+'?action=done');const j=await r.json();if(j.ok){j.codes.forEach(c=>doneCodes.add(String(c)));localStorage.setItem('ph_done',JSON.stringify([...doneCodes]));renderList();}}catch(e){}
 })();
-setWilayah(CONFIG.wilayah.includes(localStorage.getItem('ph_wil'))?localStorage.getItem('ph_wil'):CONFIG.wilayah[0]);
 </script>
 </body>
 </html>
